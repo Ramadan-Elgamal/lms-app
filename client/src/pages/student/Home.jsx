@@ -12,15 +12,17 @@ import NavBar from '../../components/educator/NavBar'
 const Home = () => {
   return (
     <div className='flex flex-col items-center space-y-7 text-center'>
-       <Hero />
+       {/* <Hero />
       <Companies />
       <CoursesSection />
       <TestimonialsSection />
       <CallToAction />
       <Footer /> 
-      <MyEnrollments/> 
-      <NavBar/>  
-      <Educator/>
+      <NavBar/>
+      <Educator/> 
+
+       <MyEnrollments/> */}
+      <Educator/> 
     </div>
   )
 }
