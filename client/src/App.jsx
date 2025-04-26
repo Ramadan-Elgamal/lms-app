@@ -40,9 +40,12 @@ const App = () => {
           {/* لما يدخل /educator بدون تحديد صفحة، نحوله تلقائيًا على /educator/dashboard */}
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="add-course" element={<AddCourse />} />
+          <Route path="add-courses" element={<AddCourse />} />
+
           <Route path="my-courses" element={<MyCourses />} />
-          <Route path="students-enrolled" element={<StudentsEnrolled />} />
+
+          <Route path="student-enrolled" element={<StudentsEnrolled />} />
+
         </Route>
 
       </Routes>
