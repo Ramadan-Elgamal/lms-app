@@ -1,9 +1,11 @@
 import React from 'react'
-import {assets, dummyEducator} from '../../assets/assets'
-
+import {assets, dummyEducatorData} from '../../assets/assets'
 import { UserButton, useUser} from '@clerk/clerk-react'
 import { Link } from 'react-router-dom'
+
+
 const NavBar = () => {
+  const educatorData = dummyEducatorData
 const { user }= useUser()
 
 
@@ -18,11 +20,9 @@ return (
     {/* User Info Section */}
     <div className='flex items-center gap-5 text-gray-500'>
       <p className='text-sm'>Hi! {user ? user.fullName : 'Developers'}</p>
-      {user ? (
-        <UserButton />
-      ) : (
-        <img className='w-8 h-8 rounded-full object-cover' src={assets.profile_img} alt="Profile" />
-      )}
+      {user ?  <UserButton />
+       : <img className='w-8 h-8 rounded-full object-cover' src={assets.profile_img} alt="Profile" />
+      }
     </div>
   </div>
 )
