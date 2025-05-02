@@ -11,7 +11,7 @@ const CourseDetails = () => {
   const { id } = useParams();
   const [courseData, setCourseData] = useState(null);
   const [openSection, setOpenSection] = useState({});
-  const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false);
+  const [isAlreadyEnrolled, _] = useState(false);
   const [playerData, setPlayerData] = useState(null);
 
   const {
@@ -22,21 +22,33 @@ const CourseDetails = () => {
     calculateCourseDuration,
     calculateNoOfLectures,
   } = useContext(AppContext);
+
+  const extractYouTubeId = (url) => {
+    const match = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^\s&]+)/
+    );
+    return match ? match[1] : null;
+  };
+
   const fetchCourseData = async () => {
+    if (!allCourses || allCourses.length === 0) return;
     const findCourse = allCourses.find((course) => course._id === id);
     setCourseData(findCourse);
   };
+
   useEffect(() => {
     fetchCourseData();
-  }, [allCourses]);
+  }, [allCourses, id]);
 
   const toggleSection = (index) => {
     setOpenSection((prev) => ({ ...prev, [index]: !prev[index] }));
   };
+
   return courseData ? (
     <>
       <div className="flex md:flex-row flex-col-reverse gap-10 relative items-start justify-between md:px-36 px-8 md:pt-30 pt-20 text-left">
         <div className="absolute top-0 left-0 w-full h-section-height -z-1 bg-gradient-to-b from-cyan-100/70"></div>
+
         {/* left column */}
         <div className="max-w-xl z-10 text-gray-500">
           <h1 className="md:text-course-details-heading-large text-course-details-heading-small font-semibold text-gray-800">
@@ -54,7 +66,7 @@ const CourseDetails = () => {
             <p>{calculateRating(courseData)}</p>
             <div className="flex">
               {Array(5)
-                .fill(null) // Initialize the array with 5 elements
+                .fill(null)
                 .map((_, i) => (
                   <img
                     key={i}
@@ -70,11 +82,11 @@ const CourseDetails = () => {
             </div>
             <p className="text-blue-600">
               ({courseData.courseRatings.length}
-              {courseData.courseRatings.length > 1 ? "ratings" : "rating"})
+              {courseData.courseRatings.length > 1 ? " ratings" : " rating"})
             </p>
             <p>
               {courseData.enrolledStudents.length}
-              {courseData.enrolledStudents.length > 1 ? "students" : "student"}
+              {courseData.enrolledStudents.length > 1 ? " students" : " student"}
             </p>
           </div>
 
@@ -85,6 +97,7 @@ const CourseDetails = () => {
             </span>
           </p>
 
+          {/* Course Structure */}
           <div className="pt-8 text-gray-800">
             <h2 className="text-xl font-semibold">Course Structure</h2>
 
@@ -100,7 +113,7 @@ const CourseDetails = () => {
                   >
                     <div className="flex items-center gap-2">
                       <img
-                        className={`tranfrom transition-transform ${
+                        className={`transform transition-transform ${
                           openSection[index] ? "rotate-180" : ""
                         }`}
                         src={assets.down_arrow_icon}
@@ -111,7 +124,7 @@ const CourseDetails = () => {
                       </p>
                     </div>
                     <p className="text-sm md:text-default">
-                      {chapter.chapterContent.length} lectures-{" "}
+                      {chapter.chapterContent.length} lectures -{" "}
                       {calculateChapterTime(chapter)}
                     </p>
                   </div>
@@ -131,13 +144,11 @@ const CourseDetails = () => {
                           <div className="flex items-center justify-between w-full text-gray-800 text-xs md:text-default">
                             <p>{lecture.lectureTitle}</p>
                             <div className="flex gap-2">
-                              {lecture.isPreviewFree && (
+                              {lecture.isPreviewFree && lecture.lectureUrl && (
                                 <p
                                   onClick={() =>
                                     setPlayerData({
-                                      videoId: lecture.lectureUrl
-                                        .split("/")
-                                        .pop(),
+                                      videoId: extractYouTubeId(lecture.lectureUrl),
                                     })
                                   }
                                   className="text-blue-500 cursor-pointer"
@@ -162,9 +173,10 @@ const CourseDetails = () => {
             </div>
           </div>
 
+          {/* Course Description */}
           <div className="py-20 text-sm md:text-default">
             <h3 className="text-xl font-semibold text-gray-800">
-              course Description
+              Course Description
             </h3>
             <p
               className="pt-3 rich-text"
@@ -176,7 +188,7 @@ const CourseDetails = () => {
         </div>
 
         {/* right column */}
-        <div className="max-w-course-card z-10 shadow-custom-card rounded-t md:rounded-none overflow=hidden bg-white min-w-[300px] sm:min-w-[420px]">
+        <div className="max-w-course-card z-10 shadow-custom-card rounded-t md:rounded-none overflow-hidden bg-white min-w-[300px] sm:min-w-[420px]">
           {playerData ? (
             <YouTube
               videoId={playerData.videoId}
@@ -189,7 +201,7 @@ const CourseDetails = () => {
 
           <div className="p-5">
             <div className="flex items-center gap-2">
-              <img className="w-3.5" src= {assets.time_left_clock_icon} alt="time left clock icon" />
+              <img className="w-3.5" src={assets.time_left_clock_icon} alt="time left clock icon" />
               <p className="text-red-500">
                 <span className="font-medium">5 days</span> left at this price!
               </p>
@@ -216,18 +228,14 @@ const CourseDetails = () => {
                 <img src={assets.star} alt="star icon" />
                 <p>{calculateRating(courseData)}</p>
               </div>
-
               <div className="h-4 w-px bg-gray-500/40"></div>
-
               <div className="flex items-center gap-1">
                 <img src={assets.time_clock_icon} alt="clock icon" />
                 <p>{calculateCourseDuration(courseData)}</p>
               </div>
-
               <div className="h-4 w-px bg-gray-500/40"></div>
-
               <div className="flex items-center gap-1">
-                <img src={assets.lesson_icon} alt="clock icon" />
+                <img src={assets.lesson_icon} alt="lesson icon" />
                 <p>{calculateNoOfLectures(courseData)} lessons</p>
               </div>
             </div>
@@ -244,7 +252,7 @@ const CourseDetails = () => {
                 <li>Lifetime access with free updates.</li>
                 <li>Step-by-Step, hands-on projects guidance.</li>
                 <li>Downloadable resources and source code.</li>
-                <li>Quizzzes to test your knowledge.</li>
+                <li>Quizzes to test your knowledge.</li>
                 <li>Certificate of completion.</li>
               </ul>
             </div>
@@ -258,4 +266,5 @@ const CourseDetails = () => {
     <Loading />
   );
 };
+
 export default CourseDetails;
