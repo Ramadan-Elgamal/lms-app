@@ -22,7 +22,7 @@ const chapterSchema = new mongoose.Schema({
     required: true,
   },
   chapterContent: [lectureSchema],
-}, {_id: flase});
+}, {_id: false});
 const courseSchema = new mongoose.Schema({
     courseTitle: {
         type: String,
