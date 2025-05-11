@@ -13,7 +13,7 @@ import userRouter from './routes/userRoutes.js'
 const app = express()
 
 //connect to database
-// await connectDB()
+await connectDB()
 await connectCloudinary()
 
 //middlewares
